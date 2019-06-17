@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form method="POST">
+    <label for="text_search">search in title of dcat:Dataset: </label><input type="text" name="text_search" value="{{ text_val}}">
+    <input type="submit"/>
+    <p>{{ message }}</p>
+
+<ol>
+    {% for resp in response %}
+<!--    <li><a href="{{resp}}"> {{resp}}</a> </li> -->
+    <li><p>{{ resp }}</p></li>
+    {%endfor%}
+</ol>
+
+
+</form>
+
+
+
+
+</body>
+</html>
+

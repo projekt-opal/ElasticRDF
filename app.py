@@ -39,7 +39,7 @@ def pose_query(term):
     return info_occurrence, refined_results
 
 
-def search_in_dcatDataset(term,field=['http://purl.org/dc/terms/description','http://purl.org/dc/terms/title']):
+def search_in_dcat(index_name,term,field=['http://purl.org/dc/terms/description','http://purl.org/dc/terms/title','http://www.w3.org/ns/dcat#keyword']):
     """
 
     :param term: a single term
@@ -47,12 +47,13 @@ def search_in_dcatDataset(term,field=['http://purl.org/dc/terms/description','ht
     :return:
     """
 
-    query = {"from": 0, "size": 200, 'query': {
-        'multi_match': {
-            "query": term,
-            "fields": field}}}
+    query = {"from": 0, "size": 200,
+             'query': {
+                 'multi_match': {
+                     "query": term,
+                     "fields": field}}}
 
-    result = es.search(index='opal_dataset', body=query)
+    result = es.search(index=index_name, body=query)
     info_occurrence = "{1} occurred in {0} number of triples".format(result['hits']['total']['value'], term)
     hits_infos= result['hits']['hits']
 
@@ -66,14 +67,48 @@ def search_in_dcatDataset(term,field=['http://purl.org/dc/terms/description','ht
     return info_occurrence, refined_results
 
 
-@app.route("/", methods=['GET', 'POST'])
+def preprocessing(free_text_query,desired_field):
+
+    if desired_field=='dcat_distribution_domain':
+        num_occurrence, results=search_in_dcat('opal_distribution',free_text_query)
+
+    elif desired_field=='dcat_dataset_titles':
+        num_occurrence, results=search_in_dcat('opal_dataset',free_text_query,field=['http://purl.org/dc/terms/title'])
+    elif desired_field=='dcat_dataset_description':
+        num_occurrence, results = search_in_dcat('opal_dataset',free_text_query,field=['http://purl.org/dc/terms/description'])
+
+    elif desired_field == 'dcat_dataset_keywords':
+        num_occurrence, results = search_in_dcat('opal_dataset',free_text_query,field=['http://www.w3.org/ns/dcat#keyword'])
+    elif desired_field == 'dcat_dataset_domain':
+        num_occurrence, results = search_in_dcat('opal_dataset',free_text_query)
+    else:
+        raise NotImplementedError()
+
+    return num_occurrence,results
+
+@app.route("/", methods=['POST'])
+def searching():
+    field=request.form.get('search_type')
+    query = request.form.get('search_query')
+
+    num_occurrence,results=preprocessing(free_text_query=query,desired_field=field)
+
+    return render_template('index.html', text_val=query, message=num_occurrence, response=results)
+
+@app.route("/", methods=['GET'])
 def index():
     if request.method == 'POST':
-        query_term = request.form.get('text_search')
 
+        search_field=request.form.get('search_type')
+        print(search_field)
+        return render_template('index.html')
+        """
+        query_term = request.form.get('search_in_title')
 
         info_occurrence, refined_results = search_in_dcatDataset(query_term)
+
         return render_template('index.html', text_val=query_term, message=info_occurrence, response=refined_results)
+        """
 
     elif request.method == 'GET':
         return render_template('index.html')

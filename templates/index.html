@@ -6,21 +6,87 @@
 </head>
 <body>
 
-<form method="POST">
-    <label for="text_search">search in title of dcat:Dataset: </label><input type="text" name="text_search" value="{{ text_val}}">
-    <input type="submit"/>
-    <p>{{ message }}</p>
+<h1>Search Fields</h1>
 
+<form method="POST">
+  <select name="search_type">
+    <option value="dcat_dataset_domain">In domains of dcat:Dataset</option>
+    <option value="dcat_dataset_titles">In titles of dcat:Dataset</option>
+    <option value="dcat_dataset_description">In descriptions of dcat:Dataset</option>
+    <option value="dcat_dataset_keywords">In keywords of dcat:Dataset</option>
+    <option value="dcat_distribution_domain">In domains dcat:Distribution</option>
+  </select>
+  <br><br>
+    <label for="title">Enter search </label><input type="text" name="search_query" value="{{ text_val}}">
+  <input type="submit">
+
+   <p>{{ message }}</p>
 <ol>
     {% for resp in response %}
-<!--    <li><a href="{{resp}}"> {{resp}}</a> </li> -->
     <li><p>{{ resp }}</p></li>
     {%endfor%}
 </ol>
 
-
 </form>
 
+<!--
+
+
+<form method="POST">
+    <label>In titles of dcat:Dataset: </label>
+    <input type="text" name="search_in_title" value="{{ text_val}}">
+    <input type="submit"/>
+    <p>{{ message }}</p>
+<ol>
+    {% for resp in response %}
+    <li><p>{{ resp }}</p></li>
+    {%endfor%}
+</ol>
+</form>
+
+
+
+
+<form method="POST">
+    <label for="title">In descriptions of dcat:Dataset: </label><input type="text" name="dataset_description" value="{{ text_val}}">
+    <input type="submit"/>
+</form>
+
+
+<form method="POST">
+    <label for="title">In keywords of dcat:Dataset: </label><input type="text" name="dataset_keyword" value="{{ text_val}}">
+    <input type="submit"/>
+</form>
+
+
+<form method="POST">
+    <label for="title">In domains dcat:Distribution: </label><input type="text" name="distribution_domain" value="{{ text_val}}">
+    <input type="submit"/>
+</form>
+
+
+<button onclick="myFunction()">Hide elements</button>
+
+<h2 class="city">London</h2>
+<p>London is the capital of England.</p>
+
+<h2 class="city">Paris</h2>
+<p>Paris is the capital of France.</p>
+
+<h2 class="city">Tokyo</h2>
+<p>Tokyo is the capital of Japan.</p>
+
+
+
+<script>
+function myFunction() {
+  var x = document.getElementsByClassName("city");
+  for (var i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+}
+</script>
+-->
 
 
 

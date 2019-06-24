@@ -8,17 +8,34 @@
 
 <h1>Search Fields</h1>
 
+
+
+<div style="float:right">
+    <h2>Created Indexes</h2>
+    <div style="border:solid;"> dcat:Dataset: {{ dcat_dataset_size }} </div>
+    <div style="border:solid;"> dcat:Distribution: {{ dcat_distr_size }} </div>
+    <div style="border:solid;"> Measurements: {{ measurement_size }} </div>
+</div>
+
+
+
 <form method="POST">
+    <div align="center">
+    <h1>Query time:{{query_time}}</h1>
+    </div>
+
+
   <select name="search_type">
-    <option value="dcat_dataset_domain">In domains of dcat:Dataset</option>
-    <option value="dcat_dataset_titles">In titles of dcat:Dataset</option>
-    <option value="dcat_dataset_description">In descriptions of dcat:Dataset</option>
-    <option value="dcat_dataset_keywords">In keywords of dcat:Dataset</option>
-    <option value="dcat_distribution_domain">In domains dcat:Distribution</option>
+      <option value="dcat_dataset_domain" {% if search_type =="dcat_dataset_domain" %} selected {% endif %}>In domains of dcat:Dataset</option>
+      <option value="dcat_dataset_titles" {% if search_type =="dcat_dataset_titles" %} selected {% endif %}>In titles of dcat:Dataset</option>
+      <option value="dcat_dataset_description" {% if search_type =="dcat_dataset_description" %} selected {% endif %}>In descriptions of dcat:Dataset</option>
+      <option value="dcat_dataset_keywords">In keywords of dcat:Dataset</option>
+      <option value="dcat_distribution_domain">In domains dcat:Distribution</option>
   </select>
   <br><br>
-    <label for="title">Enter search </label><input type="text" name="search_query" value="{{ text_val}}">
-  <input type="submit">
+    <label for="title">Enter search </label>
+    <input type="text" name="search_query" value={{search_query}}>
+    <input type="submit">
 
    <p>{{ message }}</p>
 <ol>
@@ -28,6 +45,8 @@
 </ol>
 
 </form>
+
+
 
 <!--
 

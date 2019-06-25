@@ -3,6 +3,11 @@ from typing import Sequence
 import os
 import bz2
 
+import requests
+from rdflib import Graph, URIRef
+import concurrent.futures
+
+e=concurrent.futures.ProcessPoolExecutor()
 
 def parse_n3(sentence):
     flag = 0
@@ -108,11 +113,89 @@ def generator_of_reader(knowledge_graphs, rdf_parser=parse_n3, bound=None):
 
 
 
-###########some codes
-## get all indexes
-#To get all indices es.indices.get_alias("*")
 
-# es.search(index="rdf")
+# Retrieve a single page and report the URL and contents
+def load_url(url):
+    return requests.get(url,timeout=10)
 
-# To do upsirt
-#https://stackoverflow.com/questions/33226831/how-to-use-python-elasticsearch-client-upsert-api
+def generate_sparql_queries(*,offset,num_query):
+    while num_query>0:
+        url='http://opalpro.cs.upb.de:8891/sparql?default-graph-uri=&query=PREFIX+dcat%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0D%0Aconstruct+%7B%0D%0A++%3Fs+%3Fp+%3Fo.%0D%0A++%3Fo+%3Fp2+%3Fo2.%0D%0A%7D%0D%0AWHERE+%7B%0D%0A%7B%0D%0ASELECT+DISTINCT+%3Fs+WHERE+%7B%0D%0A%3Fs+a+dcat%3ADataset.%0D%0A%7D+LIMIT+1+OFFSET+'+str(offset)+'%0D%0A%7D%0D%0A%3Fs+%3Fp+%3Fo.%0D%0AOPTIONAL%7B%3Fo+%3Fp2+%3Fo2.%7D%0D%0A%7D%0D%0A&format=text%2Fplain&timeout=0&debug=on'
+        offset+=1
+        num_query-=1
+        yield url    
+        
+def response_processer(url_responses):
+    # TODO this function should process url_responses in paralel.
+    #seed https://docs.python.org/3/library/multiprocessing.html
+    doc=dict()
+    dst=dict()
+    m=dict()
+    
+    for response in url_responses:
+        
+        if not (response.status_code == 200):
+            print('Response not successfull')
+            return None
+        
+        doc,dst,m=graph_of_dataset(response.text,doc,dst,m)
+
+    return doc,dst,m
+
+def submit_generated_sparql(generated_sparql):
+    futures=[]
+    for url in generated_sparql:
+        futures.append(e.submit(load_url,url))
+        
+    results = [f.result() for f in futures]
+    
+    return results
+
+
+prefix_uri='http://projekt-opal.de/'
+profiles=[prefix_uri+'dataset/',prefix_uri+'distribution/',prefix_uri+'measurement']
+
+def graph_of_dataset(X,doc,dst,m):
+    g = Graph()
+    g.parse(data=X, format="n3")
+    
+    for t in g:
+        s,p,o=str(t[0]),str(t[1]),str(t[2])
+        
+        """
+        if 'purl.org/dc/terms/issued' in p and 'T' not in o:
+            o=o.replace(' ', 'T')
+        
+        if 'http://purl.org/dc/terms/modified' in p and 'T' not in o:
+            o=o.replace(' ', 'T')
+            
+        """
+        
+        if 'purl.org/dc/terms/issued' in p or 'http://purl.org/dc/terms/modified' in p:
+            continue
+
+            
+        if profiles[0] in s:
+            # Important
+            doc.setdefault(s, {}).setdefault(p,[]).append(o)
+        elif profiles[1] in s:
+            # Important
+            dst.setdefault(s, {}).setdefault(p,[]).append(o)
+        elif profiles[2] in s:
+            m.setdefault(s, {}).setdefault(p,[]).append(o)
+        else:
+            """given (s,p,o), s is not expected URI."""
+    
+    return doc,dst,m
+
+def gendata(index,X):
+    for dataset_uri,body in X.items():
+        yield {            
+            "_index": index,
+            "_id":dataset_uri,
+#            "_op_type": "update",
+            "_type": "document",
+            #"doc_as_upsert":True
+
+            "_source": body
+        }

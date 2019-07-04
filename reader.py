@@ -15,7 +15,7 @@ def gen_data_provider(text,index_name):
             "_index": index_name,
             "_id":index['index']['_id'],
             "_type": "document",
-            "_op_type": "update",
+            #"_op_type": "update",
             "doc_as_upsert":True,
             "_source": body
             }

@@ -162,18 +162,6 @@ def graph_of_dataset(X,doc,dst,m):
     for t in g:
         s,p,o=str(t[0]),str(t[1]),str(t[2])
         
-        """
-        if 'purl.org/dc/terms/issued' in p and 'T' not in o:
-            o=o.replace(' ', 'T')
-        
-        if 'http://purl.org/dc/terms/modified' in p and 'T' not in o:
-            o=o.replace(' ', 'T')
-            
-        """
-        
-        if 'purl.org/dc/terms/issued' in p or 'http://purl.org/dc/terms/modified' in p:
-            continue
-
             
         if profiles[0] in s:
             # Important
@@ -188,14 +176,18 @@ def graph_of_dataset(X,doc,dst,m):
     
     return doc,dst,m
 
+
 def gendata(index,X):
     for dataset_uri,body in X.items():
         yield {            
             "_index": index,
             "_id":dataset_uri,
-#            "_op_type": "update",
-            "_type": "document",
-            #"doc_as_upsert":True
-
+            "_type": "_doc",
+            "doc_as_upsert":True,
             "_source": body
-        }
+            }
+
+
+def elastic_query(es,q,selected_index):
+    hits=es.search(index=selected_index,body=q)['hits']['hits']
+    return [i['_source'] for i in hits]

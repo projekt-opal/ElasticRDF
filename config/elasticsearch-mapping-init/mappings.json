@@ -6,8 +6,19 @@
       "description":{
          "type":"text"
       },
-      "keyword":{
-         "type":"text"
+      "landingPage":{
+         "type":"keyword"
+      },
+      "language":{
+         "type":"keyword"
+      },
+      "keywords":{
+         "type":"nested",
+         "properties":{
+            "keyword":{
+               "type":"text"
+            }
+         }
       },
       "issued":{
          "type":"text"
@@ -15,26 +26,134 @@
       "modified":{
          "type":"text"
       },
-      "publisher":{
-         "type":"keyword"
+      "hasQualityMeasurements":{
+         "type":"nested",
+         "properties":{
+            "isMeasurementOf":{
+               "type":"keyword"
+            },
+            "hasQualityMeasurement":{
+               "type":"keyword"
+            },
+            "value":{
+               "type":"float"
+            },
+            "type":{
+               "type":"keyword"
+            }
+         }
       },
-      "hasQualityMeasurement":{
-         "type":"keyword"
+      "pulisherInfo":{
+         "type":"nested",
+         "properties":{
+            "name":{
+               "type":"text"
+            },
+            "publisher":{
+               "type":"keyword"
+            },
+            "type":{
+               "type":"keyword"
+            }
+         }
       },
-      "distribution":{
-         "type":"keyword"
+      "spatialInfo":{
+         "type":"nested",
+         "properties":{
+            "geometry":{
+               "type":"text"
+            },
+            "spatial":{
+               "type":"keyword"
+            },
+            "type":{
+               "type":"keyword"
+            }
+         }
+      },
+      "contactPointInfo":{
+         "type":"nested",
+         "properties":{
+            "hasEmail":{
+               "type":"text"
+            },
+            "contactPoint":{
+               "type":"keyword"
+            },
+            "fn":{
+               "type":"text"
+            },
+            "type":{
+               "type":"keyword"
+            }
+         }
+      },
+      "distributions":{
+         "type":"nested",
+         "properties":{
+            "distribution":{
+               "type":"keyword"
+            },
+            "type":{
+               "type":"keyword"
+            },
+            "title":{
+               "type":"text"
+            },
+            "description":{
+               "type":"text"
+            },
+            "issued":{
+               "type":"text"
+            },
+            "modified":{
+               "type":"text"
+            },
+            "license":{
+               "type":"keyword"
+            },
+            "accessURL":{
+               "type":"keyword"
+            },
+            "downloadURL":{
+               "type":"keyword"
+            },
+            "format":{
+               "type":"text"
+            },
+            "mediaType":{
+               "type":"text"
+            },
+            "byteSize":{
+               "type":"text"
+            },
+            "rights":{
+               "type":"keyword"
+            }
+         }
       },
       "accrualPeriodicity":{
          "type":"keyword"
       },
-      "spatial":{
-         "type":"text"
-      },
       "identifier":{
          "type":"keyword"
       },
-      "isPrimaryTopicOf":{
-         "type":"text"
+      "temporalInfo":{
+         "type":"nested",
+         "properties":{
+            "endDate":{
+               "type":"date"
+            },
+            "temporal":{
+               "type":"keyword"
+            },
+            "startDate":{
+               "type":"date"
+            },
+            "type":{
+               "type":"keyword"
+            }
+         }
       }
    }
 }

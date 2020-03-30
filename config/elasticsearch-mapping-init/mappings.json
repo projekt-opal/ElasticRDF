@@ -1,159 +1,315 @@
 {
-   "properties":{
-      "title":{
-         "type":"text"
-      },
-      "description":{
-         "type":"text"
-      },
-      "landingPage":{
-         "type":"keyword"
-      },
-      "language":{
-         "type":"keyword"
-      },
-      "keywords":{
-         "type":"nested",
-         "properties":{
-            "keyword":{
-               "type":"text"
+    "mappings": {
+        "dynamic": false,
+        "properties": {
+            "originalURLs": {
+                "type": "keyword"
+            },
+            "themes": {
+                "type": "keyword"
+            },
+            "uri": {
+                "type": "keyword"
+            },
+            "title": {
+                "type": "text",
+                "analyzer": "english_text_analyzer"
+            },
+            "title_de": {
+                "type": "text",
+                "analyzer": "german_text_analyzer"
+            },
+            "description": {
+                "type": "text",
+                "analyzer": "english_text_analyzer"
+            },
+            "description_de": {
+                "type": "text",
+                "analyzer": "german_text_analyzer"
+            },
+            "landingPage": {
+                "type": "keyword"
+            },
+            "language": {
+                "type": "keyword"
+            },
+            "keywords": {
+                "type": "text",
+                "analyzer": "english_text_analyzer",
+                "fields": {
+                    "keyword": {
+                      "type": "keyword"
+                    }
+                }
+            },
+            "keywords_de": {
+                "type": "text",
+                "analyzer": "german_text_analyzer",
+                "fields": {
+                    "keyword": {
+                      "type": "keyword"
+                    }
+                }
+            },
+            "issued": {
+                "type": "date"
+            },
+            "modified": {
+                "type": "date"
+            },
+            "hasQualityMeasurements": {
+                "type": "nested",
+                "properties": {
+                    "isMeasurementOf": {
+                        "type": "keyword"
+                    },
+                    "value": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "publisher": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "ngram_url_analyzer",
+                        "fields": {
+                            "keyword": {
+                              "type": "keyword"
+                            }
+                        }
+                    },
+                    "uri": {
+                        "type": "keyword"
+                    },
+                    "website": {
+                        "type": "keyword"
+                    },
+                    "email": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "creator": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "analyzer": "ngram_url_analyzer",
+                        "fields": {
+                            "keyword": {
+                              "type": "keyword"
+                            }
+                        }
+                    },
+                    "uri": {
+                        "type": "keyword"
+                    },
+                    "website": {
+                        "type": "keyword"
+                    },
+                    "email": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "spatial": {
+                "type": "nested",
+                "properties": {
+                    "geometry": {
+                        "type": "geo_point"
+                    },
+                    "tag": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "contactPoint": {
+                "type": "nested",
+                "properties": {
+                    "email": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "keyword"
+                    },
+                    "adress": {
+                        "type": "keyword"
+                    },
+                    "phone": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "license": {
+                "type": "nested",
+                "properties": {
+                  "name": {
+                    "type": "keyword"
+                  },
+                  "uri": {
+                    "type": "text", 
+                    "analyzer": "ngram_url_analyzer",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+            },
+            "distributions": {
+                "type": "nested",
+                "properties": {
+                    "originalURLs": {
+                        "type": "keyword"
+                    },
+                    "uri": {
+                        "type": "keyword"
+                    },
+                    "title": {
+                        "type": "keyword"
+                    },
+                    "description": {
+                        "type": "keyword"
+                    },
+                    "issued": {
+                        "type": "date"
+                    },
+                    "modified": {
+                        "type": "date"
+                    },
+                    "license": {
+                        "type": "nested",
+                        "properties": {
+                          "name": {
+                            "type": "keyword"
+                          },
+                          "uri": {
+                            "type": "text", 
+                            "analyzer": "ngram_url_analyzer",
+                            "fields": {
+                              "keyword": {
+                                "type": "keyword"
+                              }
+                            }
+                          }
+                        }
+                    },
+                    "accessURL": {
+                        "type": "keyword"
+                    },
+                    "downloadURL": {
+                        "type": "keyword"
+                    },
+                    "format": {
+                        "type": "keyword"
+                    },
+                    "byteSize": {
+                        "type": "long"
+                    },
+                    "rights": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "accrualPeriodicity": {
+                "type": "keyword"
+            },
+            "dcatIdentifier": {
+                "type": "keyword"
+            },
+            "temporal": {
+                "type": "nested",
+                "properties": {
+                    "endDate": {
+                        "type": "date"
+                    },
+                    "startDate": {
+                        "type": "date"
+                    }
+                }
             }
-         }
-      },
-      "issued":{
-         "type":"text"
-      },
-      "modified":{
-         "type":"text"
-      },
-      "hasQualityMeasurements":{
-         "type":"nested",
-         "properties":{
-            "isMeasurementOf":{
-               "type":"keyword"
+        }
+    },
+    "settings": {
+        "index": {
+            "max_ngram_diff": 99
+        },
+        "analysis": {
+            "analyzer": {
+                "english_text_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "char_filter": [
+                        "html_strip"
+                    ],
+                    "filter": [
+                        "lowercase",
+                        "english_stemmer",
+                        "english_synonyms"
+                    ]
+                },
+                "german_text_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "char_filter": [
+                        "html_strip"
+                    ],
+                    "filter": [
+                        "lowercase",
+                        "german_stemmer",
+                        "german2_stemmer",
+                        "german_synonyms"
+                    ]
+                },
+                "ngram_url_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "letter",
+                    "char_filter": [
+                        "http_remover_filter"
+                    ],
+                    "filter": [
+                        "lowercase",
+                        "1_100_gram"
+                    ]
+                }
             },
-            "hasQualityMeasurement":{
-               "type":"keyword"
+            "char_filter": {
+                "http_remover_filter": {
+                    "type": "pattern_replace",
+                    "pattern": "^(http|https)://",
+                    "replacement": ""
+                }
             },
-            "value":{
-               "type":"float"
-            },
-            "type":{
-               "type":"keyword"
+            "filter": {
+                "english_stemmer": {
+                    "type": "stemmer",
+                    "language": "english"
+                },
+                "german_stemmer": {
+                    "type": "stemmer",
+                    "language": "german"
+                },
+                "german2_stemmer": {
+                    "type": "stemmer",
+                    "language": "german2"
+                },
+                "english_synonyms": {
+                    "type": "synonym",
+                    "synonyms_path": "analysis/english_synonyms.txt"
+                },
+                "german_synonyms": {
+                    "type": "synonym",
+                    "synonyms_path": "analysis/german_synonyms.txt"
+                },
+                "1_100_gram": {
+                    "type": "ngram",
+                    "min_gram": 1,
+                    "max_gram": 100
+                }
             }
-         }
-      },
-      "pulisherInfo":{
-         "type":"nested",
-         "properties":{
-            "name":{
-               "type":"text"
-            },
-            "publisher":{
-               "type":"keyword"
-            },
-            "type":{
-               "type":"keyword"
-            }
-         }
-      },
-      "spatialInfo":{
-         "type":"nested",
-         "properties":{
-            "geometry":{
-               "type":"text"
-            },
-            "spatial":{
-               "type":"keyword"
-            },
-            "type":{
-               "type":"keyword"
-            }
-         }
-      },
-      "contactPointInfo":{
-         "type":"nested",
-         "properties":{
-            "hasEmail":{
-               "type":"text"
-            },
-            "contactPoint":{
-               "type":"keyword"
-            },
-            "fn":{
-               "type":"text"
-            },
-            "type":{
-               "type":"keyword"
-            }
-         }
-      },
-      "distributions":{
-         "type":"nested",
-         "properties":{
-            "distribution":{
-               "type":"keyword"
-            },
-            "type":{
-               "type":"keyword"
-            },
-            "title":{
-               "type":"text"
-            },
-            "description":{
-               "type":"text"
-            },
-            "issued":{
-               "type":"text"
-            },
-            "modified":{
-               "type":"text"
-            },
-            "license":{
-               "type":"keyword"
-            },
-            "accessURL":{
-               "type":"keyword"
-            },
-            "downloadURL":{
-               "type":"keyword"
-            },
-            "format":{
-               "type":"text"
-            },
-            "mediaType":{
-               "type":"text"
-            },
-            "byteSize":{
-               "type":"text"
-            },
-            "rights":{
-               "type":"keyword"
-            }
-         }
-      },
-      "accrualPeriodicity":{
-         "type":"keyword"
-      },
-      "identifier":{
-         "type":"keyword"
-      },
-      "temporalInfo":{
-         "type":"nested",
-         "properties":{
-            "endDate":{
-               "type":"date"
-            },
-            "temporal":{
-               "type":"keyword"
-            },
-            "startDate":{
-               "type":"date"
-            },
-            "type":{
-               "type":"keyword"
-            }
-         }
-      }
-   }
+        }
+    }
 }
